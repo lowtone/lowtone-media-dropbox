@@ -18,9 +18,7 @@
 
 namespace lowtone\media\dropbox {
 
-	use lowtone\content\packages\Package,
-		lowtone\posts\lists\sections\Section,
-		lowtone\wp\posts\Post;
+	use lowtone\content\packages\Package;
 
 	// Includes
 	
@@ -33,12 +31,12 @@ namespace lowtone\media\dropbox {
 			Package::INIT_SUCCESS => function() {
 
 				add_filter("media_upload_tabs", function($tabs) {
-					$tabs["dropbox"] = __("Dropbox");
+					$tabs["dropbox"] = __("Dropbox", "lowtone_media_dropbox");
 
 					return $tabs;
 				});
 
-				add_action("admin_print_scripts", function() {
+				/*add_action("admin_print_scripts", function() {
 					$appKey = get_option("dropbox_app_key");
 
 					echo sprintf('<script type="text/javascript" src="https://www.dropbox.com/static/api/1/dropbox.js" id="dropboxjs" data-app-key="%s"></script>', $appKey);
@@ -55,7 +53,11 @@ namespace lowtone\media\dropbox {
 						//echo '<script type="text/javascript">Dropbox.choose({iframe: true});</script>';
 					});
 
-				});
+				});*/
+
+				/*add_action("admin_enqueue_scripts", function() {
+					wp_enqueue_script("lowtone_media_dropbox", plugins_url("/assets/scripts/lowtone-media-dropbox.js", __FILE__), array("media-views"), false, true);
+				});*/
 
 				return true;
 			}
