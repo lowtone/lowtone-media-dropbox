@@ -31,6 +31,10 @@ namespace lowtone\media\dropbox {
 			Package::INIT_MERGED_PATH => __NAMESPACE__,
 			Package::INIT_SUCCESS => function() {
 
+				// Register textdomain
+				
+				load_plugin_textdomain("lowtone_media_dropbox", false, basename(__DIR__) . "/assets/languages");
+
 				\lowtone\media\addMediaType(new Type(array(
 						Type::PROPERTY_TITLE => __("Dropbox", "lowtone_media_dropbox"),
 						Type::PROPERTY_NEW_FILE_TEXT => __("Import a file from your Dropbox.", "lowtone_media_dropbox"),
