@@ -19,7 +19,8 @@
 namespace lowtone\media\dropbox {
 
 	use lowtone\content\packages\Package,
-		lowtone\media\types\Type;
+		lowtone\media\types\Type,
+		lowtone\dropbox\chooser\Chooser;
 
 	// Includes
 	
@@ -27,7 +28,7 @@ namespace lowtone\media\dropbox {
 		return trigger_error("Lowtone Content plugin is required", E_USER_ERROR) && false;
 
 	$__i = Package::init(array(
-			Package::INIT_PACKAGES => array("lowtone", "lowtone\\media"),
+			Package::INIT_PACKAGES => array("lowtone", "lowtone\\media", "lowtone\\dropbox"),
 			Package::INIT_MERGED_PATH => __NAMESPACE__,
 			Package::INIT_SUCCESS => function() {
 
@@ -35,17 +36,40 @@ namespace lowtone\media\dropbox {
 				
 				load_plugin_textdomain("lowtone_media_dropbox", false, basename(__DIR__) . "/assets/languages");
 
+				$chooser = new Chooser(array(
+						Chooser::PROPERTY_ID => "lowtone_media_dropbox",
+						Chooser::PROPERTY_CALLBACK => function() {
+							header("Content-type: application/json");
+
+							echo json_encode(array(
+									"meta" => array(
+										"code" => 200,
+										"message" => array(
+											"Success!"
+										)
+									),
+									"data" => array(
+										"files" => $_REQUEST["files"]
+									)
+								));
+
+							exit;
+						}
+					));
+
 				\lowtone\media\addMediaType(new Type(array(
 						Type::PROPERTY_TITLE => __("Dropbox", "lowtone_media_dropbox"),
 						Type::PROPERTY_NEW_FILE_TEXT => __("Import a file from your Dropbox.", "lowtone_media_dropbox"),
 						Type::PROPERTY_SLUG => "dropbox",
 						Type::PROPERTY_IMAGE => plugins_url("/assets/images/dropbox-icon.png", __FILE__),
-						Type::PROPERTY_NEW_FILE_CALLBACK => function() {
+						Type::PROPERTY_NEW_FILE_CALLBACK => function() use ($chooser) {
 
 							echo '<div class="wrap">' . 
 								get_screen_icon() . 
 								'<h2>' . __("Select a file on Dropbox", "lowtone_media_dropbox") . '</h2>' . 
 								'<p>' . __("Use the chooser to select the file you want to import.", "lowtone_media_dropbox") . '</p>';
+
+							echo $chooser->button();
 
 							echo '</div>';
 
